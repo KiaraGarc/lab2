@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.chatbot;
 
 import java.io.BufferedReader;
@@ -197,6 +193,7 @@ public class Buscar extends javax.swing.JFrame {
             System.out.println("Excepcion capturada: " + e.getMessage());
         }
   
+           txtpregunta.setText("");
         
         
 
