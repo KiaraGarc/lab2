@@ -10,17 +10,7 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import org.json.JSONObject;
-<<<<<<< HEAD
-    
-/**
- *
- * @author Kiara García
- */
-=======
 
-
-
->>>>>>> 01062697b11eff4b689943b1338667c835cf33fc
 public class Buscar extends javax.swing.JFrame {
     DefaultListModel<String>modeloHistorial;
     String [][]chats; 
@@ -30,7 +20,7 @@ public class Buscar extends javax.swing.JFrame {
    StringBuilder chatactual;  
     int indice;
    private void enviarPreguntaAlChatbot(String pregunta) {
-    HttpURLConnection conn = null; // Declaramos la variable fuera del bloque try
+    HttpURLConnection conn = null; 
     try {
         String modelName = "gemma2:2b";
         String jsonInputString = String.format("{\"model\":\"%s\", \"prompt\":\"%s\",\"stream\": false}", modelName, pregunta);
@@ -79,9 +69,8 @@ public class Buscar extends javax.swing.JFrame {
     } catch (Exception e) {
         manejarErrores(e);
     } finally {
-        // Asegúrate de cerrar la conexión explícitamente en el bloque finally
         if (conn != null) {
-            conn.disconnect(); // Esto es lo que asegura que se liberen los recursos de la conexión
+            conn.disconnect(); 
         }
     }
     private void manejarErrores(int responseCode, String responseBody) {
