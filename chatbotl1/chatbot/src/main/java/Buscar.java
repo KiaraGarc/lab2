@@ -41,8 +41,8 @@ public class Buscar extends javax.swing.JFrame {
             conn.setRequestProperty("Content-Type", "application/json;utf-8");
             conn.setRequestProperty("Accept", "application/json");
             conn.setDoOutput(true);
-            conn.setConnectTimeout(30000);
-            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(90000);
+            conn.setReadTimeout(90000);
 
             
             try (OutputStream os = conn.getOutputStream()) {
