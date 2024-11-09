@@ -1,4 +1,4 @@
-# Describir Como Instalar El Programa Y Como Utilizar El Chatbot.
+# Como Instalar El Programa Y Como Utilizar El Chatbot.
 package com.mycompany.chatbot;
 
 import java.io.BufferedReader;
