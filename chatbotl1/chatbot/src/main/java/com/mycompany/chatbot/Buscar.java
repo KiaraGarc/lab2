@@ -10,11 +10,17 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import org.json.JSONObject;
+<<<<<<< HEAD
     
 /**
  *
  * @author Kiara García
  */
+=======
+
+
+
+>>>>>>> 01062697b11eff4b689943b1338667c835cf33fc
 public class Buscar extends javax.swing.JFrame {
     DefaultListModel<String>modeloHistorial;
     String [][]chats; 
