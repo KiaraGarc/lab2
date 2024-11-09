@@ -257,7 +257,6 @@ public class Buscar extends javax.swing.JFrame {
        
         
     }//GEN-LAST:event_lsthistorialMouseClicked
-
     private void btnnuevochatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnnuevochatMouseClicked
       
     if(chatactual.length() > 0 && chatcount < maxchats) {
