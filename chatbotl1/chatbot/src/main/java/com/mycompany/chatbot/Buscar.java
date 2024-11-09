@@ -10,132 +10,116 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-
 import org.json.JSONObject;
-<<<<<<< HEAD
-    
-/**
- *
- * @author Kiara García
- */
-=======
 
-
-
->>>>>>> 01062697b11eff4b689943b1338667c835cf33fc
 public class Buscar extends javax.swing.JFrame {
-    DefaultListModel<String>modeloHistorial;
-    String [][]chats; 
+    DefaultListModel<String> modeloHistorial;
+    String[][] chats; 
     int chatcount;
-    int maxchats= 50;
-    int maxpalabras= 1000;
-   StringBuilder chatactual;  
-    int indice;
-   private void enviarPreguntaAlChatbot(String pregunta) {
-    HttpURLConnection conn = null; // Declaramos la variable fuera del bloque try
-    try {
-        String modelName = "gemma2:2b";
-        String jsonInputString = String.format("{\"model\":\"%s\", \"prompt\":\"%s\",\"stream\": false}", modelName, pregunta);
-        System.out.println("JSON Enviado: " + jsonInputString);
+    int maxchats = 50;
+    int maxpalabras = 1000;
+    StringBuilder chatactual;  
 
-        URL url = new URL("http://localhost:11434/api/generate");
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json;utf-8");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setDoOutput(true);
-        conn.setConnectTimeout(60000);
-        conn.setReadTimeout(60000);
-        // Enviar la solicitud
-        try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-        }
-
-        int responseCode = conn.getResponseCode();
-        System.out.println("Response Code: " + responseCode);
-        
-        InputStream stream = (responseCode >= 400) ? conn.getErrorStream() : conn.getInputStream();
-        BufferedReader in = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
-        
-        StringBuilder response = new StringBuilder();
-        String line;
-        
-        while ((line = in.readLine()) != null) {
-            response.append(line);
-        }
-        
-        in.close();
-        
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            JSONObject jsonResponse = new JSONObject(response.toString());
-            String responseText = jsonResponse.getString("response");
-            txtchat.append("Bot: " + responseText + "\n");
-            if(chatactual.length() > 0) {
-                chatactual.append(" | ");
-            }
-            chatactual.append("Tu: ").append(pregunta).append(" | Bot: ").append(responseText);
-        } else {
-            manejarErrores(responseCode, response.toString());
-        }
-    } catch (Exception e) {
-        manejarErrores(e);
-    } finally {
-        // Asegúrate de cerrar la conexión explícitamente en el bloque finally
-        if (conn != null) {
-            conn.disconnect(); // Esto es lo que asegura que se liberen los recursos de la conexión
-        }
-    }
-    private void manejarErrores(int responseCode, String responseBody) {
-        switch (responseCode) {
-            case HttpURLConnection.HTTP_BAD_REQUEST:
-                txtchat.append("Error 400: Solicitud incorrecta. Verifica tu pregunta.\n");
-                break;
-            case HttpURLConnection.HTTP_UNAUTHORIZED:
-                txtchat.append("Error 401: No autorizado. Verifica tus credenciales.\n");
-                break;
-            case HttpURLConnection.HTTP_NOT_FOUND:
-                txtchat.append("Error 404: Recurso no encontrado.\n");
-                break;
-            case HttpURLConnection.HTTP_INTERNAL_ERROR:
-                txtchat.append("Error 500: Error interno del servidor.\n");
-                break;
-                default:
-                    txtchat.append("Error desconocido: " + responseCode + "\n" + responseBody + "\n");
-                    break;
-            }
-    }
-}   private void manejarErrores(Exception e) {
-    if (e instanceof java.net.SocketTimeoutException) {
-        txtchat.append("Error: Tiempo de espera excedido. Intenta nuevamente.\n");
-        System.out.println("Excepción capturada: Tiempo de espera excedido.");
-    } else if (e instanceof java.net.ConnectException) {
-        txtchat.append("Error: No se pudo conectar al servidor. Verifica tu conexión a Internet.\n");
-        System.out.println("Excepción capturada: No se pudo conectar al servidor.");
-    } else {
-        e.printStackTrace();
-        txtchat.append("Error inesperado: " + e.getMessage() + "\n");
-        System.out.println("Excepción capturada: " + e.getMessage());
-    }}
-
-
-        
-         
-
-    /**
-     * Creates new form Buscar
-     */
     public Buscar() {
-        
         initComponents();
         modeloHistorial = new DefaultListModel<>(); 
         lsthistorial.setModel(modeloHistorial);
-        chats = new String[maxchats][1];
-        chatcount=0;
+        chats = new String[maxchats][maxpalabras];
+        chatcount = 0;
         chatactual = new StringBuilder();  
-        
-        
-}
+    }
+
+    private void enviarPreguntaAlChatbot(String pregunta) {
+        HttpURLConnection conn = null; 
+        try {
+            String modelName = "gemma2:2b";
+            String jsonInputString = String.format("{\"model\":\"%s\", \"prompt\":\"%s\",\"stream\": false}", modelName, pregunta);
+            System.out.println("JSON Enviado: " + jsonInputString);
+
+            URL url = new URL("http://localhost:11434/api/generate");
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json;utf-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(80000);
+            conn.setReadTimeout(80000);
+
+          
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(jsonInputString.getBytes(StandardCharsets.UTF_8));
+            }
+
+            int responseCode = conn.getResponseCode();
+            System.out.println("Response Code: " + responseCode);
+
+            InputStream stream = (responseCode >= 400) ? conn.getErrorStream() : conn.getInputStream();
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) {
+                    response.append(line);
+                }
+                manejarRespuesta(response.toString(), responseCode);
+            }
+        } catch (Exception e) {
+            manejarErrores(e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect(); 
+            }
+        }
+    }
+private void manejarRespuesta(String response, int responseCode) {
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            JSONObject jsonResponse = new JSONObject(response);
+            String responseText = jsonResponse.getString("response");
+            txtchat.append("Bot: " + responseText + "\n");
+            if (chatactual.length() > 0) {
+                chatactual.append(" | ");
+            }
+            chatactual.append("Tu: ").append(txtpregunta.getText()).append(" | Bot: ").append(responseText);
+        } else {
+            manejarErrores(responseCode, response);
+        }
+    }
+    private void manejarErrores(int responseCode, String responseBody) {
+        String errorMessage;
+        switch (responseCode) {
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                errorMessage = "Error 400: Solicitud incorrecta. Verifica tu pregunta.";
+                break;
+            case HttpURLConnection.HTTP_UNAUTHORIZED:
+                errorMessage = "Error 401: No autorizado. Verifica tus credenciales.\n";
+                break;
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                errorMessage ="Error 404: Recurso no encontrado.\n";
+                break;
+            case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                errorMessage ="Error 500: Error interno del servidor.\n";
+                break;
+            default:
+                errorMessage ="Error desconocido: " + responseCode + "\n" + responseBody + "\n";
+                break;
+        }
+        txtchat.append(errorMessage + "\n");
+    }
+
+    private void manejarErrores(Exception e) {
+        String errorMessage;
+        if (e instanceof java.net.SocketTimeoutException) {
+            errorMessage = "Error: Tiempo de espera excedido. Intenta nuevamente.\n";
+        } else if (e instanceof java.net.ConnectException) {
+            errorMessage = "Error: No se pudo conectar al servidor. Verifica tu conexión a Internet.\n";
+        } else {
+             errorMessage = "Error inesperado: " + e.getMessage();
+            e.printStackTrace();
+            }
+        txtchat.append(errorMessage + "\n");
+    }
+    
+   
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -248,33 +232,33 @@ public class Buscar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnenviarMouseClicked
 
     private void lsthistorialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lsthistorialMouseClicked
-        int indice = lsthistorial.getSelectedIndex();
-        System.out.println("indice seleccionado" + indice);
-        if(indice >=0 && indice<chatcount){
-          String [] opciones = {"Ver chat", "Eliminar chat"};
-            int seleccion = JOptionPane.showOptionDialog(null,"¿Qué desea hacer con el chat seleccionado?","Opciones", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, opciones[0]);
-            if(seleccion == 0){
-                txtchat.setText(chats[indice][0]);
-              txtpregunta.requestFocus();
-              System.out.println("Mensaje mostrado: " + chats[indice][0]);   
-              }else if(seleccion == 1){
-                  eliminarChat(indice);
-              }
-            }
+            int indice = lsthistorial.getSelectedIndex();
+            System.out.println("indice seleccionado" + indice);
+            if(indice >=0 && indice<chatcount){
+              String [] opciones = {"Ver chat", "Eliminar chat"};
+                int seleccion = JOptionPane.showOptionDialog(null,"¿Qué desea hacer con el chat seleccionado?","Opciones", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, opciones[0]);
+                if(seleccion == 0){
+                    txtchat.setText(chats[indice][0]);
+                  txtpregunta.requestFocus();
+                  System.out.println("Mensaje mostrado: " + chats[indice][0]);   
+                  }else if(seleccion == 1){
+                      eliminarChat(indice);
+                  }
+                }
             
        
         
     }//GEN-LAST:event_lsthistorialMouseClicked
     private void eliminarChat(int indice){
-        System.out.println("Eliminando chat " + indice);
-        String[][] newHistorial = new String[49][];
+        System.out.println("Eliminando chat: " + indice);
+        String[][] newHist = new String[49][];
         int i = 0;
         for (int j=0; j<50;j++){
             if(j!= indice){
-                newHistorial[i]=chats[j];
+                newHist[i]=chats[j];
                 i++;
             }
-        } chats= newHistorial;
+        } chats= newHist;
         chatcount--;
         actualizarLista();
     }
