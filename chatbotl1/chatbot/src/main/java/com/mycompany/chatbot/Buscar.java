@@ -9,6 +9,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+
 import org.json.JSONObject;
 <<<<<<< HEAD
     
@@ -249,14 +251,41 @@ public class Buscar extends javax.swing.JFrame {
             int indice = lsthistorial.getSelectedIndex();
             System.out.println("indice seleccionado" + indice);
             if(indice >=0 && indice<chatcount){
-                txtchat.setText(chats[indice][0]);
-                
-                System.out.println("Mensaje mostrado: " + chats[indice][0]);
+              String [] opciones = {"Ver chat", "Eliminar chat"};
+                int seleccion = JOptionPane.showOptionDialog(null,"¿Qué desea hacer con el chat seleccionado?","Opciones", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, opciones[0]);
+                if(seleccion == 0){
+                    txtchat.setText(chats[indice][0]);
+                  txtpregunta.requestFocus();
+                  System.out.println("Mensaje mostrado: " + chats[indice][0]);   
+                  }else if(seleccion == 1){
+                      eliminarChat(indice);
+                  }
                 }
             
        
         
     }//GEN-LAST:event_lsthistorialMouseClicked
+    private void eliminarChat(int indice){
+        System.out.println("Eliminando chat: " + indice);
+        String[][] newHist = new String[49][];
+        int i = 0;
+        for (int j=0; j<50;j++){
+            if(j!= indice){
+                newHist[i]=chats[j];
+                i++;
+            }
+        } chats= newHist;
+        chatcount--;
+        actualizarLista();
+    }
+    private void actualizarLista(){
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for(int i=0; i<chatcount; i++){
+            model.addElement("Chat " + (i+1));
+            
+        }
+        lsthistorial.setModel(model);
+    }
     private void btnnuevochatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnnuevochatMouseClicked
       
     if(chatactual.length() > 0 && chatcount < maxchats) {
