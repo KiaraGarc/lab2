@@ -11,11 +11,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import org.json.JSONObject;
 
-Maaaaaaaaaaaaaaax
-/**
- *
- * @author Kiara García
- */
+
+
 public class Buscar extends javax.swing.JFrame {
     DefaultListModel<String>modeloHistorial;
     String [][]chats; 
