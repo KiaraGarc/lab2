@@ -10,8 +10,7 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import org.json.JSONObject;
-
-Maaaaaaaaaaaaaaax
+    
 /**
  *
  * @author Kiara García
@@ -24,6 +23,68 @@ public class Buscar extends javax.swing.JFrame {
     int maxpalabras= 1000;
    StringBuilder chatactual;  
     int indice;
+   private void enviarPreguntaAlChatbot(String pregunta) {
+    HttpURLConnection conn = null; // Declaramos la variable fuera del bloque try
+    try {
+        String modelName = "gemma2:2b";
+        String jsonInputString = String.format("{\"model\":\"%s\", \"prompt\":\"%s\",\"stream\": false}", modelName, pregunta);
+        System.out.println("JSON Enviado: " + jsonInputString);
+
+        URL url = new URL("http://localhost:11434/api/generate");
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json;utf-8");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setDoOutput(true);
+
+        // Enviar la solicitud
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = conn.getResponseCode();
+        System.out.println("Response Code: " + responseCode);
+        
+        InputStream stream = (responseCode >= 400) ? conn.getErrorStream() : conn.getInputStream();
+        BufferedReader in = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+        
+        StringBuilder response = new StringBuilder();
+        String line;
+        
+        while ((line = in.readLine()) != null) {
+            response.append(line);
+        }
+        
+        in.close();
+        
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            JSONObject jsonResponse = new JSONObject(response.toString());
+            String responseText = jsonResponse.getString("response");
+            txtchat.append("Bot: " + responseText + "\n");
+            if(chatactual.length() > 0) {
+                chatactual.append(" | ");
+            }
+            chatactual.append("Tu: ").append(pregunta).append(" | Bot: ").append(responseText);
+        } else {
+            txtchat.append("Error: " + responseCode + "\n" + response.toString() + "\n");
+            System.out.println("Error: " + responseCode);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        txtchat.append("Error: " + e.getMessage() + "\n");
+        System.out.println("Excepción capturada: " + e.getMessage());
+    } finally {
+        // Asegúrate de cerrar la conexión explícitamente en el bloque finally
+        if (conn != null) {
+            conn.disconnect(); // Esto es lo que asegura que se liberen los recursos de la conexión
+        }
+    }
+}
+
+
+        
+         
 
     /**
      * Creates new form Buscar
@@ -38,7 +99,7 @@ public class Buscar extends javax.swing.JFrame {
         chatactual = new StringBuilder();  
         
         
-    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -133,66 +194,16 @@ public class Buscar extends javax.swing.JFrame {
         
         
             if (pregunta.isEmpty()) {
-                txtchat.setText("");
+                
                return;
                
             } 
 
                 txtchat.append("Tu: " + pregunta + "\n");
 
-            
+            enviarPreguntaAlChatbot(pregunta);
       
-        try {
-            String modelName = "gemma2:2b";
-            String jsonInputString = String.format("{\"model\":\"%s\", \"prompt\":\"%s\",\"stream\": false}", modelName, pregunta);
-            System.out.println("JSON Enviado: " + jsonInputString);
-
-            URL url = new URL("http://localhost:11434/api/generate");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json;utf-8"); 
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(true);
-
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-
-            }
-            int responseCode = conn.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
-
-            InputStream stream = (responseCode >= 400) ? conn.getErrorStream() : conn.getInputStream();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                response.append(line);
-            }
-            in.close();
-
-            System.out.println("Response Body: " + response.toString());
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-
-                JSONObject jsonResponse = new JSONObject(response.toString());
-                String responseText = jsonResponse.getString("response");
-                txtchat.append("Bot: " + responseText + "\n");
- 
-                if(chatactual.length()>0){
-                    chatactual.append(" | ");
-}  chatactual.append("Tu: ").append(pregunta).append(" | Bot: ").append(responseText);
-
-                } else {
-                txtchat.append("Error: " + responseCode + "\n" + response.toString() + "\n");
-                System.out.println("Error: " + responseCode );
-               
-            }
-             }catch (Exception e) {
-            e.printStackTrace();
-            txtchat.append("Error: " + e.getMessage() + "\n");
-            System.out.println("Excepcion capturada: " + e.getMessage());
-        }
+        
   
            txtpregunta.setText("");
         
@@ -201,11 +212,11 @@ public class Buscar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnenviarMouseClicked
 
     private void lsthistorialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lsthistorialMouseClicked
-            indice = lsthistorial.getSelectedIndex();
+            int indice = lsthistorial.getSelectedIndex();
             System.out.println("indice seleccionado" + indice);
             if(indice >=0 && indice<chatcount){
                 txtchat.setText(chats[indice][0]);
-                txtpregunta.requestFocus();
+                
                 System.out.println("Mensaje mostrado: " + chats[indice][0]);
                 }
             
@@ -215,12 +226,13 @@ public class Buscar extends javax.swing.JFrame {
 
     private void btnnuevochatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnnuevochatMouseClicked
       
-     if(chatactual.length()>0 && chatcount< maxchats){
-         chats[chatcount][0]= chatactual.toString(); 
-         modeloHistorial.addElement("Chat " + (chatcount + 1)); 
-         chatcount++;
-         System.out.println("chat guardado: " + chats[chatcount -1][0]);
-     }
+    if(chatactual.length() > 0 && chatcount < maxchats) {
+    chats[chatcount][0] = chatactual.toString(); 
+    modeloHistorial.addElement("Chat " + (chatcount + 1)); 
+    System.out.println("chat guardado: " + chats[chatcount][0]);
+    chatcount++;
+}
+
      txtchat.setText("");
      txtpregunta.setText("");
      chatactual.setLength(0);
