@@ -42,7 +42,8 @@ public class Buscar extends javax.swing.JFrame {
         conn.setRequestProperty("Content-Type", "application/json;utf-8");
         conn.setRequestProperty("Accept", "application/json");
         conn.setDoOutput(true);
-
+        conn.setConnectTimeout(30000);
+        conn.setReadTimeout(30000);
         // Enviar la solicitud
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
@@ -73,20 +74,47 @@ public class Buscar extends javax.swing.JFrame {
             }
             chatactual.append("Tu: ").append(pregunta).append(" | Bot: ").append(responseText);
         } else {
-            txtchat.append("Error: " + responseCode + "\n" + response.toString() + "\n");
-            System.out.println("Error: " + responseCode);
+            manejarErrores(responseCode, response.toString());
         }
     } catch (Exception e) {
-        e.printStackTrace();
-        txtchat.append("Error: " + e.getMessage() + "\n");
-        System.out.println("Excepción capturada: " + e.getMessage());
+        manejarErrores(e);
     } finally {
         // Asegúrate de cerrar la conexión explícitamente en el bloque finally
         if (conn != null) {
             conn.disconnect(); // Esto es lo que asegura que se liberen los recursos de la conexión
         }
     }
-}
+    private void manejarErrores(int responseCode, String responseBody) {
+        switch (responseCode) {
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                txtchat.append("Error 400: Solicitud incorrecta. Verifica tu pregunta.\n");
+                break;
+            case HttpURLConnection.HTTP_UNAUTHORIZED:
+                txtchat.append("Error 401: No autorizado. Verifica tus credenciales.\n");
+                break;
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                txtchat.append("Error 404: Recurso no encontrado.\n");
+                break;
+            case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                txtchat.append("Error 500: Error interno del servidor.\n");
+                break;
+                default:
+                    txtchat.append("Error desconocido: " + responseCode + "\n" + responseBody + "\n");
+                    break;
+            }
+        }
+}   private void manejarErrores(Exception e) {
+    if (e instanceof java.net.SocketTimeoutException) {
+        txtchat.append("Error: Tiempo de espera excedido. Intenta nuevamente.\n");
+        System.out.println("Excepción capturada: Tiempo de espera excedido.");
+    } else if (e instanceof java.net.ConnectException) {
+        txtchat.append("Error: No se pudo conectar al servidor. Verifica tu conexión a Internet.\n");
+        System.out.println("Excepción capturada: No se pudo conectar al servidor.");
+    } else {
+        e.printStackTrace();
+        txtchat.append("Error inesperado: " + e.getMessage() + "\n");
+        System.out.println("Excepción capturada: " + e.getMessage());
+    }}
 
 
         
