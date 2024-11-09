@@ -131,7 +131,10 @@ public class Buscar extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>                        
+    }// </editor-fold>
+
+       // Esta Función configura la interfaz gráfica de usuario (GUI) con el diseño generado, y establece los componentes visuales como lsthistorial, txtchat, y botones (btnenviar, btnnuevochat).
+       // Es invocada en el constructor y es generada automáticamente por el editor de interfaces de NetBeans o algún entorno similar, por lo que no se modifica manualmente.
 
     private void btnenviarMouseClicked(java.awt.event.MouseEvent evt) {                                       
         String pregunta = txtpregunta.getText(); 
@@ -276,6 +279,9 @@ public class Buscar extends javax.swing.JFrame {
             }
         });
     }
+    // Esta Función ejecuta la aplicación y abre la ventana principal tambien establece el tema Nimbus para la interfaz.
+    // Llama al método invokeLater para crear y mostrar la ventana Buscar.
+    // Este es el punto de entrada del programa y se ejecuta al iniciar la aplicación. Crea y muestra la ventana Buscar.
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnenviar;
