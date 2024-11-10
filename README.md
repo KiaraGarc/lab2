@@ -24,7 +24,7 @@ Para conectar el prgrama a la Api debes descargar Ollama .
 7. Al finalizar la descarga prueba la api.
 
 # Instalacion CHATBOX:
-1. Dirigete a la pagina de github de nuestro proyecto descarga el proyecto que esta comprimid en .zip.
+1. Dirigete a la pagina de github de nuestro proyecto descarga el proyecto que esta comprimido "lab2-main.zip".
 2. Una vez descargado el archivo, se recomienda que se pase el archivo a un lugar de facil acceso.
 3. Despues de haber cambiado el archivo, darle "click" a "extraer todo o extraer aqui", y el archivo se empezará a en el lugar donde se encuentre el archivo.
 4. Despues de haber extrtaer el archivo, abre neatbeans, dirigete a la parte superior derecha darle "click" a "abrir proyecto" y buscar el archivo del proyecto y darle "click" en abrir.
