@@ -19,7 +19,7 @@ Para conectar el prgrama a la Api debes descargar Ollama .
 2. Darle "click" a "download", despues darle "click" a "download para windows" y se descargara el ejecutable.
 3. Finalizado la descarga ejecuta el archivo y se empezará a instalar la Api.
 4. Una vez finalizada la instalación abre ollama en los elementos de windows, "darle click" derecho al icono y despues a "view logs" esto abrirá los "cmd" del computador para interactuar con la Api.
-5. Dirigete a Github de ollama y busca la versipn que deseas intalar de ollama.
+5. Dirigete a Github de ollama y busca la versipn que deseas intalar de ollama: https://github.com/ollama/ollama
 6. Una vez identificada la version (EN ESTE CASO "Gemma 2	2B"), con el "cmd" abierto escribe esto:  ollama run gemma2:2b . Esto empezerá a instalar la versin de ollama
 7. Al finalizar la descarga prueba la api.
 
