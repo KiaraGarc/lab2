@@ -31,5 +31,13 @@ Para conectar el prgrama a la Api debes descargar Ollama .
 5. Una vez abierto el programa y no presenta errores ejecutalo y inmediatamente se abrirá la interfaz del programa Cognitia AI .
 
 Despues de seguir todos los pasos anteriores, ya podras emepezar a interactuar con Cognitia AI y empezar una converzacion con el bot.
+
+# Cómo utilizar el chatbot
+1. Escribe tu pregunta en el campo de texto y haz clic en el botón Enviar para recibir una respuesta del bot. La conversación aparecerá en el cuadro de texto.
+2. Haz clic en el botón Nuevo Chat para guardar la conversación en el historial. La conversación será visible en el historial que se encuentra a la izquierda de la interfaz .
+3. A la izquierda de la interfaz se encuentra el historial de conversaciones, selecciona una conversación en lsthistorial para cargarla en el área de chat.
+
+En el Github del proyecto se encuentra el manual de usuario del programa.
+
 -disfruta el programa-
 <3
